@@ -27,3 +27,7 @@ def get_all_accounts():
 
 def get_all_transactions():
     return TransactionModel.query.all()
+
+
+def update_account():
+    pass

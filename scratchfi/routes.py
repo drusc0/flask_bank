@@ -24,6 +24,13 @@ def home():
 
 @app.route('/accounts', methods=['GET'])
 def get_accounts():
+    """Accounts endpoint
+    Returns the whole list of accounts stored in the mini.db
+    when there is a querystr with accountIds, we use that to filter the
+    list to be returned.
+    If an account that doesn't exist is requested, the account is created
+    and appended to the results (balance 0 and not frozen)
+    """
     accounts = request.args.getlist('accountId')
     output = get_accounts_from(accounts)
 
@@ -34,6 +41,10 @@ def get_accounts():
 
 @app.route('/account/<account_num>', methods=['GET'])
 def get_account(account_num):
+    """Account/:id endpoint
+    GET method to return a single information value instead of the full list
+    of accounts (like in the previous endpoints.
+    """
     output = get_accounts_from(account_num)
     output.extend(__create_not_present_accounts([account_num], output))
 
@@ -42,9 +53,19 @@ def get_account(account_num):
 
 @app.route('/transactions', methods=['GET'])
 def get_transactions():
+    """Transactions endpoint
+    Returns a complete list of transactions performed.
+    """
     output = get_all_transactions()
 
     return jsonify(transaction_schemas.dump(output))
+
+
+@app.route('/transactions', methods=['POST'])
+def post_transactions():
+    body_request = request.json
+
+    pass
 
 
 ######################
@@ -58,7 +79,6 @@ def __create_not_present_accounts(account_strings, account_models):
             if acc not in account_set:
                 try:
                     created_accounts.append(create_account(acc))
-                    print("newly created account", created_accounts[-1])
                 except Exception as e:
                     print(e)
         return created_accounts
