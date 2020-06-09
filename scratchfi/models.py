@@ -3,7 +3,7 @@ from scratchfi import db, ma
 
 class AccountModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    account_num = db.Column(db.String(32), index=True)
+    account_num = db.Column(db.String(32), index=True, unique=True)
     balance = db.Column(db.Float)
     frozen = db.Column(db.Boolean)
 

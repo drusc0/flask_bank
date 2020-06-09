@@ -31,8 +31,15 @@ def get_all_accounts():
     return jsonify(account_schemas.dump(output))
 
 
-def __create_not_present_accounts(account_strings, account_models):
+@app.route('/account/<account_num>', methods=['GET'])
+def get_account(account_num):
+    output = get_accounts_from(account_num)
+    output.extend(__create_not_present_accounts([account_num], output))
 
+    return account_schema.jsonify(output[0])
+
+
+def __create_not_present_accounts(account_strings, account_models):
     if len(account_strings) != len(account_models):
         created_accounts = []
         account_set = set([x.account_num for x in account_models])
