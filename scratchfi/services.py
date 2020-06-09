@@ -1,6 +1,6 @@
 from scratchfi import db
 
-from scratchfi.models import AccountModel
+from scratchfi.models import AccountModel, TransactionModel
 
 
 def create_account(account):
@@ -23,3 +23,7 @@ def get_accounts_from(accounts):
 
 def get_all_accounts():
     return AccountModel.query.all()
+
+
+def get_all_transactions():
+    return TransactionModel.query.all()

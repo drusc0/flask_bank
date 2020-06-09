@@ -1,12 +1,13 @@
 from scratchfi import app
-from scratchfi.models import AccountSchema
-from scratchfi.services import get_accounts_from, create_account
-from scratchfi.transformers import AccountTransformer
+from scratchfi.models import AccountSchema, TransactionSchema
+from scratchfi.services import get_accounts_from, create_account, get_all_transactions
 
 from flask import request, jsonify
 
 account_schema = AccountSchema()
 account_schemas = AccountSchema(many=True)
+transaction_schema = TransactionSchema()
+transaction_schemas = TransactionSchema(many=True)
 
 
 @app.route('/')
@@ -22,7 +23,7 @@ def home():
 
 
 @app.route('/accounts', methods=['GET'])
-def get_all_accounts():
+def get_accounts():
     accounts = request.args.getlist('accountId')
     output = get_accounts_from(accounts)
 
@@ -39,6 +40,16 @@ def get_account(account_num):
     return account_schema.jsonify(output[0])
 
 
+@app.route('/transactions', methods=['GET'])
+def get_transactions():
+    output = get_all_transactions()
+
+    return jsonify(transaction_schemas.dump(output))
+
+
+######################
+# helper functions
+######################
 def __create_not_present_accounts(account_strings, account_models):
     if len(account_strings) != len(account_models):
         created_accounts = []
