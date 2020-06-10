@@ -1,6 +1,11 @@
 from scratchfi.constants import ACCOUNT_ID_FIELD, THAW_COMMAND, FREEZE_COMMAND, DEPOSIT_COMMAND, WITHDRAW_COMMAND, \
     XFER_COMMAND
-from scratchfi.services import create_account, update_account, create_transaction, get_accounts_from, get_single_account
+from scratchfi.services import create_account, update_account, create_transaction, get_accounts_from, \
+    get_single_account, get_all_transactions
+
+import logging
+
+log = logging.getLogger(__name__)
 
 COMMAND_FIELDS = {
     'DEPOSIT': {'accountId', 'amount'},
@@ -69,9 +74,9 @@ class AccountTransformer(object):
 
 class TransactionTransformer(object):
     @staticmethod
-    def handle(body_request):
+    def handle(body_request=None):
         if not body_request:
-            return None
+            return get_all_transactions()
 
         unprocessed_transactions = []
         for req in body_request:

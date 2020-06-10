@@ -1,11 +1,13 @@
 from scratchfi import app
 from scratchfi.models import AccountSchema, TransactionSchema
-from scratchfi.services import get_accounts_from, create_account, get_all_transactions
 
 from flask import request, jsonify
+import logging
 
 from scratchfi.transformers import TransactionTransformer, AccountTransformer
 
+
+log = logging.getLogger(__name__)
 account_schema = AccountSchema()
 account_schemas = AccountSchema(many=True)
 transaction_schema = TransactionSchema()
@@ -20,7 +22,7 @@ def home():
     be able to quickly understand which APIs are available,
     and how they can be used.
     """
-
+    log.info("entering the home page")
     return "Welcome to Scratch.fi mini challenge"
 
 
@@ -33,6 +35,7 @@ def get_accounts():
     If an account that doesn't exist is requested, the account is created
     and appended to the results (balance 0 and not frozen)
     """
+    log.info("GET /accounts with query string: {}".format(request.args))
     response = AccountTransformer.handle(request.args)
     return jsonify(account_schemas.dump(response))
 
@@ -44,8 +47,10 @@ def get_transactions():
     When POST method is invoked, returns transactions unable to complete
     """
     if request.method == 'POST':
+        log.info("POST /transactions with body request: {}".format(request.json))
         response = TransactionTransformer.handle(request.json)
         return jsonify(response)
 
-    output = get_all_transactions()
+    log.info("GET /transactions with query string: {}".format(request.args))
+    output = TransactionTransformer.handle()
     return jsonify(transaction_schemas.dump(output))
