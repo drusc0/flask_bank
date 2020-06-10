@@ -1,5 +1,6 @@
 from scratchfi.constants import ACCOUNT_ID_FIELD, THAW_COMMAND, FREEZE_COMMAND, DEPOSIT_COMMAND, WITHDRAW_COMMAND, \
-    XFER_COMMAND
+    XFER_COMMAND, AMOUNT_FIELD, TO_ID_FIELD, FROM_ID_FIELD
+from scratchfi.modelrequests import TransactionRequest, AccountRequest
 from scratchfi.services import create_account, update_account, create_transaction, get_accounts_from, \
     get_single_account, get_all_transactions
 
@@ -8,26 +9,12 @@ import logging
 log = logging.getLogger(__name__)
 
 COMMAND_FIELDS = {
-    'DEPOSIT': {'accountId', 'amount'},
-    'WITHDRAW': {'accountId', 'amount'},
-    'XFER': {'fromId', 'toId', 'amount'},
-    'FREEZE': {'accountId'},
-    'THAW': {'accountId'}
+    DEPOSIT_COMMAND: {ACCOUNT_ID_FIELD, AMOUNT_FIELD},
+    WITHDRAW_COMMAND: {ACCOUNT_ID_FIELD, AMOUNT_FIELD},
+    XFER_COMMAND: {FROM_ID_FIELD, TO_ID_FIELD, AMOUNT_FIELD},
+    FREEZE_COMMAND: {ACCOUNT_ID_FIELD},
+    THAW_COMMAND: {ACCOUNT_ID_FIELD}
 }
-
-
-class TransactionRequest:
-    def __init__(self, dictionary):
-        for key in dictionary:
-            setattr(self, key, dictionary[key])
-
-    def get_dict(self):
-        return self.__dict__
-
-
-class AccountRequest:
-    def __init__(self, account_num):
-        setattr(self, ACCOUNT_ID_FIELD, account_num)
 
 
 class AccountTransformer(object):
