@@ -2,9 +2,11 @@ from scratchfi import db, ma
 
 from datetime import datetime
 
+from scratchfi.constants import ACCOUNTS_TABLE_NAME, TRANSACTIONS_TABLE_NAME
+
 
 class AccountModel(db.Model):
-    __tablename__ = "accounts"
+    __tablename__ = ACCOUNTS_TABLE_NAME
 
     id = db.Column(db.Integer, primary_key=True)
     account_num = db.Column(db.String(32), index=True, unique=True)
@@ -22,7 +24,7 @@ class AccountModel(db.Model):
 
 
 class TransactionModel(db.Model):
-    __tablename__ = "transactions"
+    __tablename__ = TRANSACTIONS_TABLE_NAME
 
     id = db.Column(db.Integer, primary_key=True)
     command = db.Column(db.String(16))

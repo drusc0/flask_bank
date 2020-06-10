@@ -4,6 +4,8 @@ from scratchfi.services import get_accounts_from, create_account, get_all_transa
 
 from flask import request, jsonify
 
+from scratchfi.transformers import TransactionTransformer, AccountTransformer
+
 account_schema = AccountSchema()
 account_schemas = AccountSchema(many=True)
 transaction_schema = TransactionSchema()
@@ -31,55 +33,19 @@ def get_accounts():
     If an account that doesn't exist is requested, the account is created
     and appended to the results (balance 0 and not frozen)
     """
-    accounts = request.args.getlist('accountId')
-    output = get_accounts_from(accounts)
-
-    output.extend(__create_not_present_accounts(accounts, output))
-
-    return jsonify(account_schemas.dump(output))
+    response = AccountTransformer.handle(request.args)
+    return jsonify(account_schemas.dump(response))
 
 
-@app.route('/account/<account_num>', methods=['GET'])
-def get_account(account_num):
-    """Account/:id endpoint
-    GET method to return a single information value instead of the full list
-    of accounts (like in the previous endpoints.
-    """
-    output = get_accounts_from(account_num)
-    output.extend(__create_not_present_accounts([account_num], output))
-
-    return account_schema.jsonify(output[0])
-
-
-@app.route('/transactions', methods=['GET'])
+@app.route('/transactions', methods=['GET', 'POST'])
 def get_transactions():
     """Transactions endpoint
     Returns a complete list of transactions performed.
+    When POST method is invoked, returns transactions unable to complete
     """
+    if request.method == 'POST':
+        response = TransactionTransformer.handle(request.json)
+        return jsonify(response)
+
     output = get_all_transactions()
-
     return jsonify(transaction_schemas.dump(output))
-
-
-@app.route('/transactions', methods=['POST'])
-def post_transactions():
-    body_request = request.json
-
-    pass
-
-
-######################
-# helper functions
-######################
-def __create_not_present_accounts(account_strings, account_models):
-    if len(account_strings) != len(account_models):
-        created_accounts = []
-        account_set = set([x.account_num for x in account_models])
-        for acc in account_strings:
-            if acc not in account_set:
-                try:
-                    created_accounts.append(create_account(acc))
-                except Exception as e:
-                    print(e)
-        return created_accounts
-    return []
