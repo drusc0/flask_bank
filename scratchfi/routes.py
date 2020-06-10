@@ -1,7 +1,6 @@
-from scratchfi import app
 from scratchfi.models import AccountSchema, TransactionSchema
 
-from flask import request, jsonify
+from flask import current_app as app, request, jsonify
 import logging
 
 from scratchfi.transformers import TransactionTransformer, AccountTransformer

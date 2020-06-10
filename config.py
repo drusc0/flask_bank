@@ -10,6 +10,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     # debugging flask on
     DEBUG = True
+    TESTING = True
 
     # secret key to avoid CSRF attacks
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
