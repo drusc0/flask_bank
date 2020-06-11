@@ -21,6 +21,7 @@ The database will only be composed of 2 tables, transactions and accounts. Trans
 It was briefly mentioned above that we are generating a transaction id when we get the json list of requests for each of the transactions. I am using the uuid library in python and the `uuid4()` function that generates the id based on random numbers. The first option was to use `uuid1()`, but it uses mac address and could be a potential issue for privacy. Not so much for this challenge since it will be run locally, but still something to think about.
 
 ## Testing
+Tests using pytest and pytest-flask. In order to execute them, run the command: `pytest`
 
 ## Execution
 I am pretty new to building the docker container files. So I decided to explore this alternative and learn something new.
