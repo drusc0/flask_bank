@@ -10,7 +10,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     # debugging flask on
     DEBUG = True
-    TESTING = True
 
     # secret key to avoid CSRF attacks
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
@@ -18,6 +17,12 @@ class Config:
     # DB-related configs
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-                               'sqlite:///' + os.path.join(basedir, 'minibank.db')
+                              'sqlite:///' + os.path.join(basedir, 'minibank.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+
+class TestConfig(Config):
+    TESTING = True
+
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+                              'sqlite:///' + os.path.join(basedir, 'minibank_test.db')

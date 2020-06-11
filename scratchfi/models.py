@@ -20,7 +20,7 @@ class AccountModel(db.Model):
         self.frozen = frozen
 
     def __repr__(self):
-        return "<Account {}: ${} isFroze: {}>".format(self.account_num, self.balance, self.frozen)
+        return "<Account {}: ${} isFrozen: {}>".format(self.account_num, self.balance, self.frozen)
 
 
 class TransactionModel(db.Model):
